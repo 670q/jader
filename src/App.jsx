@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 
 // --- API Configurations ---
-const apiKey = import.meta.env.VITE_GEMINI_API_KEY || ""; // Gemini API Key is provided by the execution environment
+const apiKey = "AIzaSyBCcSkaPLVtYvE4Sh7G4uk3T4sDgAEeFO8"; // Hardcoded for private use
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
 // --- Main Application Component ---
