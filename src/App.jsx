@@ -104,28 +104,7 @@ export default function App() {
     if (cleaned.startsWith('```')) {
       cleaned = cleaned.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
     }
-    try {
-      return JSON.parse(cleaned);
-    } catch (e1) {
-      console.warn("JSON parse attempt 1 failed, sanitizing unescaped newlines:", e1.message);
-      try {
-        const sanitized = cleaned.replace(/"([^"\\]*(\\.[^"\\]*)*)"/g, (match) => {
-          return match.replace(/\r?\n/g, '\\n').replace(/\t/g, '\\t');
-        });
-        return JSON.parse(sanitized);
-      } catch (e2) {
-        console.warn("JSON parse attempt 2 failed, extracting object substring:", e2.message);
-        const start = cleaned.indexOf('{');
-        const end = cleaned.lastIndexOf('}');
-        if (start !== -1 && end > start) {
-          const sub = cleaned.substring(start, end + 1).replace(/"([^"\\]*(\\.[^"\\]*)*)"/g, (match) => {
-            return match.replace(/\r?\n/g, '\\n').replace(/\t/g, '\\t');
-          });
-          return JSON.parse(sub);
-        }
-        throw e1;
-      }
-    }
+    return JSON.parse(cleaned);
   };
 
   const fetchWithRetry = async (payloadConfig, retries = 2) => {
@@ -502,7 +481,7 @@ export default function App() {
 
       const textResponse = result.candidates?.[0]?.content?.parts?.[0]?.text;
       if (textResponse) {
-        const parsedData = safeJsonParse(textResponse);
+        const parsedData = JSON.parse(textResponse);
         
         const exps = parsedData.experiences?.length > 0 
           ? parsedData.experiences.map((exp, i) => ({ ...exp, id: Date.now() + i })) 
