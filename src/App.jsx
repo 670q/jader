@@ -365,9 +365,11 @@ export default function App() {
     setSelectedFiles(prev => prev.filter((_, index) => index !== indexToRemove));
   };
 
-  const handleCombinedExtraction = async () => {
-    if (selectedFiles.length === 0 && !rawCvText.trim()) return;
-    
+  // --- PDF/Image/DOCX Extraction Logic (Original Baseline) ---
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
     setIsExtracting(true);
     setApiError('');
 
@@ -375,51 +377,40 @@ export default function App() {
       const prompt = `
         أنت خبير في الموارد البشرية. قم باستخراج بيانات السيرة الذاتية المرفقة بدقة.
         إذا لم تجد معلومة معينة، اتركها فارغة. تجاهل أي نصوص نائبة (Placeholders) مثل [Date] أو [اسم الجامعة] ولا تقم باستخراجها. المهارات اجعلها نصاً واحداً مفصولاً بفواصل.
-        ${userData.notes ? `\nتوجيهات وملاحظات هامة من المستخدم يجب مراعاتها بدقة أثناء الاستخراج:\n${userData.notes}\n` : ''}
       `;
 
       let parts = [{ text: prompt }];
 
-      if (rawCvText.trim()) {
-        parts.push({ text: "محتوى السيرة الذاتية النصي:\n" + rawCvText });
-      }
-
-      if (selectedFiles.length > 0) {
-        for (const file of selectedFiles) {
-          if (file.name.endsWith('.docx') || file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
-            const loadMammoth = () => new Promise((resolve, reject) => {
-              if (window.mammoth) return resolve(window.mammoth);
-              const script = document.createElement('script');
-              script.src = "https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js";
-              script.onload = () => resolve(window.mammoth);
-              script.onerror = reject;
-              document.head.appendChild(script);
-            });
-            
-            const mammoth = await loadMammoth();
-            const arrayBuffer = await file.arrayBuffer();
-            const result = await mammoth.extractRawText({ arrayBuffer });
-            parts.push({ text: `\n--- محتوى الملف المرفق (${file.name}) ---\n` + result.value });
-          } 
-          else {
-            const base64String = await new Promise((resolve, reject) => {
-              const reader = new FileReader();
-              reader.onloadend = () => resolve(reader.result.split(',')[1]);
-              reader.onerror = reject;
-              reader.readAsDataURL(file);
-            });
-            
-            let mimeType = file.type;
-            if (!mimeType) {
-              if (file.name.toLowerCase().endsWith('.pdf')) mimeType = 'application/pdf';
-              else if (file.name.toLowerCase().endsWith('.png')) mimeType = 'image/png';
-              else if (file.name.toLowerCase().match(/\.(jpg|jpeg)$/)) mimeType = 'image/jpeg';
-            }
-            parts.push({ 
-              inlineData: { mimeType: mimeType, data: base64String } 
-            });
-          }
+      if (file.name.endsWith('.docx') || file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+        const loadMammoth = () => new Promise((resolve, reject) => {
+          if (window.mammoth) return resolve(window.mammoth);
+          const script = document.createElement('script');
+          script.src = "https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js";
+          script.onload = () => resolve(window.mammoth);
+          script.onerror = reject;
+          document.head.appendChild(script);
+        });
+        
+        const mammoth = await loadMammoth();
+        const arrayBuffer = await file.arrayBuffer();
+        const result = await mammoth.extractRawText({ arrayBuffer });
+        parts.push({ text: "محتوى السيرة الذاتية المستخرج:\n" + result.value });
+      } 
+      else {
+        const base64String = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result.split(',')[1]);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+        
+        let mimeType = file.type;
+        if (!mimeType) {
+          if (file.name.toLowerCase().endsWith('.pdf')) mimeType = 'application/pdf';
+          else if (file.name.toLowerCase().endsWith('.png')) mimeType = 'image/png';
+          else if (file.name.toLowerCase().match(/\.(jpg|jpeg)$/)) mimeType = 'image/jpeg';
         }
+        parts.push({ inlineData: { mimeType: mimeType, data: base64String } });
       }
 
       const extractionSchema = {
@@ -497,11 +488,8 @@ export default function App() {
           experiences: exps,
           education: edus
         }));
-        
-        setRawCvText('');
-        setSelectedFiles([]);
       } else {
-        throw new Error("No response generated");
+        throw new Error("No response generated from AI.");
       }
     } catch (err) {
       console.error(err);
@@ -862,85 +850,37 @@ export default function App() {
 
   const renderStep1 = () => (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 p-6 rounded-xl shadow-sm border border-emerald-100 flex flex-col text-center">
-        <h2 className="text-xl font-bold text-emerald-800 mb-2">استخراج البيانات الذكي</h2>
-        <p className="text-gray-600 mb-5 text-sm">يمكنك رفع ملف (سيرة ذاتية أو صور)، أو لصق نص، <span className="font-bold">أو استخدامهما معاً</span> ليقوم الذكاء الاصطناعي بدمجها واستخراج بياناتك تلقائياً.</p>
+      {/* PDF/Image Upload Extraction Card (Original Baseline) */}
+      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 text-center">
+        <h2 className="text-xl font-bold mb-3 flex items-center justify-center text-gray-800">
+          <Upload className="ml-2 w-5 h-5 text-emerald-600"/> ارفع سيرتك الذاتية الحالية (PDF / Word / صورة)
+        </h2>
+        <p className="text-gray-500 text-sm mb-5">ليقوم الذكاء الاصطناعي باستخراج كافة بياناتك وتعبئتها تلقائياً بدقة متناهية</p>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full mb-5">
-          <div className="border-2 border-dashed border-emerald-300 hover:border-emerald-500 transition-colors rounded-xl p-4 flex flex-col items-center justify-center bg-white relative min-h-[160px]">
-            {selectedFiles.length > 0 && (
-              <div className="w-full flex flex-wrap gap-2 mb-4 justify-center">
-                {selectedFiles.map((file, index) => (
-                  <div key={index} className="bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs px-2.5 py-1.5 rounded-lg flex items-center gap-1.5 max-w-[140px]">
-                    <span className="truncate" dir="ltr">{file.name}</span>
-                    <button onClick={() => removeSelectedFile(index)} className="text-red-500 hover:text-red-700 bg-red-50 rounded-full p-0.5"><X className="w-3 h-3"/></button>
-                  </div>
-                ))}
-              </div>
-            )}
-            
-            {selectedFiles.length < 9 && (
-              <>
-                {selectedFiles.length === 0 && <Upload className="w-10 h-10 text-emerald-400 mb-3"/>}
-                <span className="text-sm text-gray-600 font-medium mb-3">
-                  {selectedFiles.length === 0 ? 'ارفع السيرة الذاتية أو صور الشهادات' : 'إضافة ملفات أخرى (الحد 9)'}
-                </span>
-                <input 
-                  type="file" 
-                  id="cv-upload" 
-                  accept=".pdf,.png,.jpg,.jpeg,.docx,application/pdf,image/png,image/jpeg,application/vnd.openxmlformats-officedocument.wordprocessingml.document" 
-                  className="hidden" 
-                  multiple
-                  onChange={handleFileSelect} 
-                  disabled={isExtracting} 
-                />
-                <label 
-                  htmlFor="cv-upload" 
-                  className="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-5 py-2.5 rounded-xl text-sm font-bold cursor-pointer transition-colors shadow-sm"
-                >
-                  اختيار ملفات
-                </label>
-              </>
-            )}
-          </div>
-
-          <div className="flex flex-col h-full min-h-[160px]">
-            <textarea 
-              value={rawCvText} 
-              onChange={(e) => setRawCvText(e.target.value)} 
-              placeholder="...أو الصق بياناتك من مسودة، لينكد إن، أو أي نص آخر هنا" 
-              className="w-full h-full p-4 border-2 border-emerald-100 rounded-xl outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-50 transition-all text-right shadow-inner bg-white text-sm resize-none"
-              disabled={isExtracting}
-            />
-          </div>
-        </div>
-
-        <div className="w-full text-right mb-5">
-          <h3 className="text-sm font-bold text-gray-800 mb-2 flex items-center"><FileText className="ml-1 w-4 h-4 text-emerald-600"/> ملاحظات وتوجيهات للذكاء الاصطناعي (اختياري)</h3>
-          <textarea 
-            value={userData.notes} 
-            onChange={(e) => setUserData({...userData, notes: e.target.value})} 
-            placeholder="أضف أي توجيهات هنا... (مثال: ركز على مهاراتي في الإدارة، اختصر الخبرات القديمة، أضف شهادة PMP لم أذكرها بالملف...)" 
-            className="w-full p-3 border-2 border-emerald-100 rounded-xl focus:border-emerald-400 focus:ring-4 focus:ring-emerald-50 outline-none min-h-[80px] text-sm resize-y shadow-inner bg-white transition-all"
-            disabled={isExtracting}
+        <div className="border-2 border-dashed border-emerald-300 hover:border-emerald-500 transition-colors rounded-xl p-8 flex flex-col items-center justify-center bg-emerald-50/30 relative">
+          <input 
+            type="file" 
+            id="cv-upload" 
+            accept=".pdf,.png,.jpg,.jpeg,.docx,application/pdf,image/png,image/jpeg,application/vnd.openxmlformats-officedocument.wordprocessingml.document" 
+            className="hidden" 
+            onChange={handleFileUpload} 
+            disabled={isExtracting} 
           />
+          <label 
+            htmlFor="cv-upload" 
+            className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl font-bold cursor-pointer transition-colors shadow-md flex items-center"
+          >
+            {isExtracting ? (
+              <><Wand2 className="w-5 h-5 ml-2 animate-spin"/> جاري استخراج البيانات...</>
+            ) : (
+              <><Upload className="w-5 h-5 ml-2"/> اختيار ملف السيرة الذاتية</>
+            )}
+          </label>
         </div>
-
-        <button 
-          onClick={handleCombinedExtraction} 
-          disabled={isExtracting || (selectedFiles.length === 0 && !rawCvText.trim())}
-          className="bg-gradient-to-l from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed text-white px-10 py-3.5 rounded-xl font-bold flex items-center justify-center transition-all shadow-md hover:shadow-lg w-full md:w-auto mx-auto"
-        >
-          {isExtracting ? (
-            <><Wand2 className="w-5 h-5 ml-2 animate-pulse"/> جاري تحليل البيانات ودمجها...</>
-          ) : (
-            <><Wand2 className="w-5 h-5 ml-2"/> استخراج البيانات الذكي</>
-          )}
-        </button>
 
         {apiError && (
-          <div className="mt-4 p-3 bg-red-50 text-red-700 border border-red-200 rounded-lg flex items-center text-sm font-bold w-full max-w-md mx-auto">
-            <AlertCircle className="w-4 h-4 ml-2 flex-shrink-0"/> {apiError}
+          <div className="mt-4 p-3 bg-red-50 text-red-700 border border-red-200 rounded-lg flex items-center justify-center text-sm font-bold">
+            <AlertCircle className="w-4 h-4 ml-2"/> {apiError}
           </div>
         )}
       </div>
