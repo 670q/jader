@@ -297,10 +297,7 @@ export default function App() {
       contentRef.current.style.height = 'auto';
       void contentRef.current.offsetHeight; 
       
-      const zoomFactor = Math.max(0.7, 1 + (fontSizeDelta || 0) * 0.07);
-      const rectHeight = contentRef.current.getBoundingClientRect().height;
-      const scrollH = contentRef.current.scrollHeight * zoomFactor;
-      const actualHeight = Math.max(rectHeight, scrollH);
+      const actualHeight = Math.max(contentRef.current.getBoundingClientRect().height, contentRef.current.scrollHeight);
       
       const targetHeight = 1120; 
       
@@ -365,7 +362,11 @@ export default function App() {
     setSelectedFiles(prev => prev.filter((_, index) => index !== indexToRemove));
   };
 
-  // --- PDF/Image/DOCX Extraction Logic (Original Baseline) ---
+  // ----------------------------------------------------------------------------
+  // 🔒 [PROTECTED EXTRACTION SYSTEM - STABLE VERSION 1.0]
+  // ⚠️ تنبيه هام: نظام استخراج البيانات من السيرة الذاتية ممتازة ومقفلة!
+  // ⚠️ لا تقم بالتعديل على هذا الكود أبداً (تم حفظ نسخة الاحتياط في src/extractionSystem_v1.0.js)
+  // ----------------------------------------------------------------------------
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -535,6 +536,28 @@ export default function App() {
     setTimeout(() => {
       const headHtml = document.head.innerHTML;
       
+      // Clone the print element and clean up transform/zoom inline styles
+      const printClone = printArea.cloneNode(true);
+      printClone.style.transform = 'none';
+      printClone.style.zoom = '1';
+      printClone.style.height = 'auto';
+      printClone.style.minHeight = '297mm';
+      printClone.style.maxHeight = 'none';
+      printClone.style.overflow = 'visible';
+
+      const innerElements = printClone.querySelectorAll('*');
+      innerElements.forEach(el => {
+        if (el.style) {
+          if (el.style.transform && el.style.transform.includes('scale')) {
+            el.style.transform = 'none';
+          }
+          if (el.style.zoom) {
+            el.style.zoom = '1';
+          }
+          el.style.maxHeight = 'none';
+        }
+      });
+
       const htmlContent = `
         <!DOCTYPE html>
         <html dir="${cvLanguage === 'en' ? 'ltr' : 'rtl'}">
@@ -553,28 +576,23 @@ export default function App() {
                 print-color-adjust: exact !important; 
               }
               
-              /* قفل الصفحة الواحدة بقوة لمنع المتصفح من توليد أي صفحة ثانية */
+              #print-wrapper {
+                width: 210mm !important;
+                margin: 0 auto;
+                background: white;
+                box-sizing: border-box;
+              }
+
               ${pageLimit === '1' ? `
-                html, body {
-                  width: 210mm !important;
-                  height: 297mm !important;
+                html, body, #print-wrapper {
                   max-height: 297mm !important;
                   overflow: hidden !important;
-                }
-                #print-wrapper {
-                  width: 210mm !important;
-                  height: 297mm !important;
-                  max-height: 297mm !important;
-                  overflow: hidden !important;
-                  page-break-after: avoid !important;
-                  page-break-before: avoid !important;
-                  page-break-inside: avoid !important;
                 }
               ` : `
                 #print-wrapper {
-                  width: 210mm !important;
                   min-height: 297mm;
                   height: auto;
+                  overflow: visible !important;
                 }
               `}
 
@@ -587,13 +605,13 @@ export default function App() {
           </head>
           <body>
             <div id="print-wrapper">
-              ${printArea.innerHTML}
+              ${printClone.outerHTML}
             </div>
             <script>
               window.onload = () => {
                 setTimeout(() => {
                   window.print();
-                }, 1000);
+                }, 800);
               };
             </script>
           </body>
@@ -1214,17 +1232,17 @@ export default function App() {
               {/* Scalable Inner Content Wrapper */}
               <div 
                 ref={contentRef}
-                className="w-full bg-white min-h-[297mm] flex flex-col justify-start"
+                className="w-full bg-white flex flex-col justify-start"
                 style={{
                   transform: pageLimit === '1' ? `scale(${cvScale})` : 'none',
                   transformOrigin: 'top center',
-                  zoom: Math.max(0.7, 1 + fontSizeDelta * 0.07),
+                  fontSize: `${100 + (fontSizeDelta || 0) * 4}%`,
                 }}
               >
               
               {/* Template 1: Classic */}
               {cvTemplate === 'classic' && (
-                <div className={`w-full min-h-[297mm] flex flex-col justify-start p-8 md:p-10 ${cvLanguage === 'en' ? 'text-left' : 'text-right'}`} dir={cvLanguage === 'en' ? 'ltr' : 'rtl'} style={{fontFamily: getFontFamily('classic')}}>
+                <div className={`w-full flex flex-col justify-start p-8 md:p-10 ${cvLanguage === 'en' ? 'text-left' : 'text-right'}`} dir={cvLanguage === 'en' ? 'ltr' : 'rtl'} style={{fontFamily: getFontFamily('classic')}}>
                   {/* CV Header */}
                   <div className="border-b-2 border-emerald-800 pb-5 mb-5">
                     <h1 className="text-3xl font-bold text-gray-900 mb-2">{pName}</h1>
@@ -1295,7 +1313,7 @@ export default function App() {
 
               {/* Template 2: Modern */}
               {cvTemplate === 'modern' && (
-                <div className={`w-full min-h-[297mm] flex flex-col justify-start ${cvLanguage === 'en' ? 'text-left' : 'text-right'}`} dir={cvLanguage === 'en' ? 'ltr' : 'rtl'} style={{fontFamily: getFontFamily('modern')}}>
+                <div className={`w-full flex flex-col justify-start ${cvLanguage === 'en' ? 'text-left' : 'text-right'}`} dir={cvLanguage === 'en' ? 'ltr' : 'rtl'} style={{fontFamily: getFontFamily('modern')}}>
                   <div className="bg-slate-800 text-white p-8">
                     <h1 className="text-3xl font-bold mb-1.5">{pName}</h1>
                     <h2 className="text-lg text-emerald-400 font-bold mb-4">{pTitle}</h2>
@@ -1364,7 +1382,7 @@ export default function App() {
 
               {/* Template 3: Minimal */}
               {cvTemplate === 'minimal' && (
-                <div className={`w-full min-h-[297mm] flex flex-col justify-start p-10 md:p-14 ${cvLanguage === 'en' ? 'text-left' : 'text-right'}`} dir={cvLanguage === 'en' ? 'ltr' : 'rtl'} style={{fontFamily: getFontFamily('minimal')}}>
+                <div className={`w-full flex flex-col justify-start p-8 md:p-12 ${cvLanguage === 'en' ? 'text-left' : 'text-right'}`} dir={cvLanguage === 'en' ? 'ltr' : 'rtl'} style={{fontFamily: getFontFamily('minimal')}}>
                   <div className="text-center mb-10">
                     <h1 className="text-3xl font-light tracking-widest text-gray-900 mb-2 uppercase">{pName}</h1>
                     <p className="text-emerald-700 uppercase tracking-widest text-[13px] font-bold">{pTitle}</p>
@@ -1429,7 +1447,7 @@ export default function App() {
 
               {/* Template 4: Professional */}
               {cvTemplate === 'professional' && (
-                <div className={`w-full ${pageLimit === '1' ? '' : 'min-h-[297mm]'} flex flex-col overflow-hidden ${cvLanguage === 'en' ? 'text-left' : 'text-right'}`} dir={cvLanguage === 'en' ? 'ltr' : 'rtl'} style={{fontFamily: getFontFamily('professional')}}>
+                <div className={`w-full flex flex-col overflow-hidden ${cvLanguage === 'en' ? 'text-left' : 'text-right'}`} dir={cvLanguage === 'en' ? 'ltr' : 'rtl'} style={{fontFamily: getFontFamily('professional')}}>
                   <div className="bg-[#1e293b] text-white p-8 border-b-[6px] border-emerald-500">
                     <h1 className="text-3xl font-bold mb-1.5 tracking-wide uppercase">{pName}</h1>
                     <h2 className="text-lg text-emerald-400 font-bold tracking-widest uppercase mb-4">{pTitle}</h2>
@@ -1497,7 +1515,7 @@ export default function App() {
 
               {/* Template 5: Creative */}
               {cvTemplate === 'creative' && (
-                <div className={`w-full ${pageLimit === '1' ? '' : 'min-h-[297mm]'} flex flex-col md:flex-row ${cvLanguage === 'en' ? 'text-left' : 'text-right'}`} dir={cvLanguage === 'en' ? 'ltr' : 'rtl'} style={{fontFamily: getFontFamily('creative')}}>
+                <div className={`w-full flex flex-col md:flex-row ${cvLanguage === 'en' ? 'text-left' : 'text-right'}`} dir={cvLanguage === 'en' ? 'ltr' : 'rtl'} style={{fontFamily: getFontFamily('creative')}}>
                   <div className="md:w-1/3 bg-emerald-800 text-emerald-50 p-8">
                     <div className="mb-8">
                       <h1 className="text-3xl font-black text-white mb-2 leading-tight">{pName}</h1>
@@ -1579,7 +1597,7 @@ export default function App() {
 
               {/* Template 6: Elegant */}
               {cvTemplate === 'elegant' && (
-                <div className={`w-full ${pageLimit === '1' ? '' : 'min-h-[297mm]'} p-10 md:p-14 ${cvLanguage === 'en' ? 'text-left' : 'text-right'}`} dir={cvLanguage === 'en' ? 'ltr' : 'rtl'} style={{fontFamily: getFontFamily('elegant')}}>
+                <div className={`w-full p-8 md:p-12 ${cvLanguage === 'en' ? 'text-left' : 'text-right'}`} dir={cvLanguage === 'en' ? 'ltr' : 'rtl'} style={{fontFamily: getFontFamily('elegant')}}>
                   <div className="text-center border-b-[3px] border-double border-gray-800 pb-5 mb-6">
                     <h1 className="text-4xl font-bold text-gray-900 mb-1.5 uppercase tracking-wide">{pName}</h1>
                     <h2 className="text-[16px] text-gray-600 font-bold mb-3">{pTitle}</h2>
@@ -1646,7 +1664,7 @@ export default function App() {
 
               {/* Template 7: Formal */}
               {cvTemplate === 'formal' && (
-                <div className={`w-full min-h-[297mm] flex flex-col justify-start p-10 md:p-14 ${cvLanguage === 'en' ? 'text-left' : 'text-right'}`} dir={cvLanguage === 'en' ? 'ltr' : 'rtl'} style={{fontFamily: getFontFamily('formal')}}>
+                <div className={`w-full flex flex-col justify-start p-8 md:p-12 ${cvLanguage === 'en' ? 'text-left' : 'text-right'}`} dir={cvLanguage === 'en' ? 'ltr' : 'rtl'} style={{fontFamily: getFontFamily('formal')}}>
                   {/* Header */}
                   <div className="text-center mb-4">
                     <h1 className="text-4xl font-bold text-gray-900 uppercase tracking-widest">{pName}</h1>
@@ -1778,7 +1796,7 @@ export default function App() {
 
               {/* Template 8: Corporate */}
               {cvTemplate === 'corporate' && (
-                <div className={`w-full min-h-[297mm] flex flex-col justify-start p-10 md:p-14 ${cvLanguage === 'en' ? 'text-left' : 'text-right'}`} dir={cvLanguage === 'en' ? 'ltr' : 'rtl'} style={{fontFamily: getFontFamily('corporate')}}>
+                <div className={`w-full flex flex-col justify-start p-8 md:p-12 ${cvLanguage === 'en' ? 'text-left' : 'text-right'}`} dir={cvLanguage === 'en' ? 'ltr' : 'rtl'} style={{fontFamily: getFontFamily('corporate')}}>
                   {/* Header */}
                   <div className="mb-5">
                     <h1 className="text-4xl font-extrabold text-blue-700 uppercase tracking-widest">{pName}</h1>
