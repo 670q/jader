@@ -318,12 +318,16 @@ export default function App() {
       contentRef.current.style.height = 'auto';
       void contentRef.current.offsetHeight; 
       
-      const rawHeight = contentRef.current.scrollHeight;
-      const targetHeight = 1123; 
+      const zoomFactor = Math.max(0.7, 1 + (fontSizeDelta || 0) * 0.07);
+      const rectHeight = contentRef.current.getBoundingClientRect().height;
+      const scrollH = contentRef.current.scrollHeight * zoomFactor;
+      const actualHeight = Math.max(rectHeight, scrollH);
+      
+      const targetHeight = 1120; 
       
       let newScale = 1;
-      if (rawHeight > targetHeight) {
-        newScale = (targetHeight / rawHeight) * 0.98;
+      if (actualHeight > targetHeight) {
+        newScale = (targetHeight / actualHeight) * 0.97;
       }
       
       contentRef.current.style.transform = oldTransform;
@@ -1293,7 +1297,7 @@ export default function App() {
               {/* Scalable Inner Content Wrapper */}
               <div 
                 ref={contentRef}
-                className="w-full bg-white min-h-[297mm] flex flex-col justify-between"
+                className="w-full bg-white min-h-[297mm] flex flex-col justify-start"
                 style={{
                   transform: pageLimit === '1' ? `scale(${cvScale})` : 'none',
                   transformOrigin: 'top center',
@@ -1303,7 +1307,7 @@ export default function App() {
               
               {/* Template 1: Classic */}
               {cvTemplate === 'classic' && (
-                <div className={`w-full min-h-[297mm] h-full flex flex-col justify-between p-8 md:p-10 ${cvLanguage === 'en' ? 'text-left' : 'text-right'}`} dir={cvLanguage === 'en' ? 'ltr' : 'rtl'} style={{fontFamily: getFontFamily('classic')}}>
+                <div className={`w-full min-h-[297mm] flex flex-col justify-start p-8 md:p-10 ${cvLanguage === 'en' ? 'text-left' : 'text-right'}`} dir={cvLanguage === 'en' ? 'ltr' : 'rtl'} style={{fontFamily: getFontFamily('classic')}}>
                   {/* CV Header */}
                   <div className="border-b-2 border-emerald-800 pb-5 mb-5">
                     <h1 className="text-3xl font-bold text-gray-900 mb-2">{pName}</h1>
@@ -1374,7 +1378,7 @@ export default function App() {
 
               {/* Template 2: Modern */}
               {cvTemplate === 'modern' && (
-                <div className={`w-full min-h-[297mm] h-full flex flex-col justify-between ${cvLanguage === 'en' ? 'text-left' : 'text-right'}`} dir={cvLanguage === 'en' ? 'ltr' : 'rtl'} style={{fontFamily: getFontFamily('modern')}}>
+                <div className={`w-full min-h-[297mm] flex flex-col justify-start ${cvLanguage === 'en' ? 'text-left' : 'text-right'}`} dir={cvLanguage === 'en' ? 'ltr' : 'rtl'} style={{fontFamily: getFontFamily('modern')}}>
                   <div className="bg-slate-800 text-white p-8">
                     <h1 className="text-3xl font-bold mb-1.5">{pName}</h1>
                     <h2 className="text-lg text-emerald-400 font-bold mb-4">{pTitle}</h2>
@@ -1443,7 +1447,7 @@ export default function App() {
 
               {/* Template 3: Minimal */}
               {cvTemplate === 'minimal' && (
-                <div className={`w-full min-h-[297mm] h-full flex flex-col justify-between p-10 md:p-14 ${cvLanguage === 'en' ? 'text-left' : 'text-right'}`} dir={cvLanguage === 'en' ? 'ltr' : 'rtl'} style={{fontFamily: getFontFamily('minimal')}}>
+                <div className={`w-full min-h-[297mm] flex flex-col justify-start p-10 md:p-14 ${cvLanguage === 'en' ? 'text-left' : 'text-right'}`} dir={cvLanguage === 'en' ? 'ltr' : 'rtl'} style={{fontFamily: getFontFamily('minimal')}}>
                   <div className="text-center mb-10">
                     <h1 className="text-3xl font-light tracking-widest text-gray-900 mb-2 uppercase">{pName}</h1>
                     <p className="text-emerald-700 uppercase tracking-widest text-[13px] font-bold">{pTitle}</p>
@@ -1725,7 +1729,7 @@ export default function App() {
 
               {/* Template 7: Formal */}
               {cvTemplate === 'formal' && (
-                <div className={`w-full min-h-[297mm] h-full flex flex-col justify-between p-10 md:p-14 ${cvLanguage === 'en' ? 'text-left' : 'text-right'}`} dir={cvLanguage === 'en' ? 'ltr' : 'rtl'} style={{fontFamily: getFontFamily('formal')}}>
+                <div className={`w-full min-h-[297mm] flex flex-col justify-start p-10 md:p-14 ${cvLanguage === 'en' ? 'text-left' : 'text-right'}`} dir={cvLanguage === 'en' ? 'ltr' : 'rtl'} style={{fontFamily: getFontFamily('formal')}}>
                   {/* Header */}
                   <div className="text-center mb-4">
                     <h1 className="text-4xl font-bold text-gray-900 uppercase tracking-widest">{pName}</h1>
@@ -1857,7 +1861,7 @@ export default function App() {
 
               {/* Template 8: Corporate */}
               {cvTemplate === 'corporate' && (
-                <div className={`w-full min-h-[297mm] h-full flex flex-col justify-between p-10 md:p-14 ${cvLanguage === 'en' ? 'text-left' : 'text-right'}`} dir={cvLanguage === 'en' ? 'ltr' : 'rtl'} style={{fontFamily: getFontFamily('corporate')}}>
+                <div className={`w-full min-h-[297mm] flex flex-col justify-start p-10 md:p-14 ${cvLanguage === 'en' ? 'text-left' : 'text-right'}`} dir={cvLanguage === 'en' ? 'ltr' : 'rtl'} style={{fontFamily: getFontFamily('corporate')}}>
                   {/* Header */}
                   <div className="mb-5">
                     <h1 className="text-4xl font-extrabold text-blue-700 uppercase tracking-widest">{pName}</h1>

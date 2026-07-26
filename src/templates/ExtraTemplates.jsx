@@ -17,7 +17,7 @@ export function HarvardTemplate({ userData, generatedResult, isEn, font, fontSiz
   const skills = parseSkills(userData.skills);
 
   return (
-    <div className="p-8 md:p-10 bg-white text-gray-900 min-h-[297mm] h-full flex flex-col justify-between" style={{ fontFamily: font, zoom: Math.max(0.7, 1 + fontSizeDelta * 0.07) }}>
+    <div className="p-8 md:p-10 bg-white text-gray-900 min-h-[297mm] flex flex-col justify-start" style={{ fontFamily: font, zoom: Math.max(0.7, 1 + fontSizeDelta * 0.07) }}>
       {/* Header */}
       <div className="text-center border-b-2 border-gray-900 pb-4 mb-4">
         <h1 className="text-2xl font-bold tracking-tight uppercase mb-1">{p.fullName || 'الاسم الكامل'}</h1>
@@ -30,7 +30,7 @@ export function HarvardTemplate({ userData, generatedResult, isEn, font, fontSiz
       </div>
 
       {/* Main Content Space-Y-4 */}
-      <div className="space-y-4 flex-1 flex flex-col justify-between py-2">
+      <div className="space-y-5 flex-1 flex flex-col justify-start py-2">
         {/* Summary */}
         {summary && (
           <div>
@@ -107,7 +107,7 @@ export function TechTemplate({ userData, generatedResult, isEn, font, fontSizeDe
   const skills = parseSkills(userData.skills);
 
   return (
-    <div className="p-8 md:p-10 bg-slate-900 text-slate-100 min-h-[297mm] h-full flex flex-col justify-between" style={{ fontFamily: font, zoom: Math.max(0.7, 1 + fontSizeDelta * 0.07) }}>
+    <div className="p-8 md:p-10 bg-slate-900 text-slate-100 min-h-[297mm] flex flex-col justify-start" style={{ fontFamily: font, zoom: Math.max(0.7, 1 + fontSizeDelta * 0.07) }}>
       {/* Header */}
       <div className="border-b border-slate-700 pb-4 mb-4 flex justify-between items-start">
         <div>
@@ -124,7 +124,7 @@ export function TechTemplate({ userData, generatedResult, isEn, font, fontSizeDe
         </div>
       </div>
 
-      <div className="space-y-4 flex-1 flex flex-col justify-between py-2">
+      <div className="space-y-5 flex-1 flex flex-col justify-start py-2">
         {/* Summary */}
         {summary && (
           <div className="bg-slate-800/80 p-4 rounded-xl border border-slate-700/60">
@@ -198,7 +198,7 @@ export function ExecutiveTemplate({ userData, generatedResult, isEn, font, fontS
   const skills = parseSkills(userData.skills);
 
   return (
-    <div className="p-8 md:p-10 bg-slate-50 text-slate-900 min-h-[297mm] h-full flex flex-col justify-between" style={{ fontFamily: font, zoom: Math.max(0.7, 1 + fontSizeDelta * 0.07) }}>
+    <div className="p-8 md:p-10 bg-slate-50 text-slate-900 min-h-[297mm] flex flex-col justify-start" style={{ fontFamily: font, zoom: Math.max(0.7, 1 + fontSizeDelta * 0.07) }}>
       {/* Header Banner */}
       <div className="bg-slate-900 text-white p-6 rounded-2xl mb-4 shadow-md flex justify-between items-center">
         <div>
@@ -212,7 +212,7 @@ export function ExecutiveTemplate({ userData, generatedResult, isEn, font, fontS
         </div>
       </div>
 
-      <div className="space-y-4 flex-1 flex flex-col justify-between py-2">
+      <div className="space-y-5 flex-1 flex flex-col justify-start py-2">
         {/* Executive Summary */}
         {summary && (
           <div className="border-r-4 border-amber-500 pr-4 pl-2 py-2 bg-amber-50/50 rounded-l-xl">
@@ -285,7 +285,7 @@ export function NordicTemplate({ userData, generatedResult, isEn, font, fontSize
   const skills = parseSkills(userData.skills);
 
   return (
-    <div className="p-8 md:p-12 bg-[#FDFBF7] text-stone-800 min-h-[297mm] h-full flex flex-col justify-between" style={{ fontFamily: font, zoom: Math.max(0.7, 1 + fontSizeDelta * 0.07) }}>
+    <div className="p-8 md:p-12 bg-[#FDFBF7] text-stone-800 min-h-[297mm] flex flex-col justify-start" style={{ fontFamily: font, zoom: Math.max(0.7, 1 + fontSizeDelta * 0.07) }}>
       {/* Header */}
       <div className="border-b border-stone-300 pb-4 mb-4 flex justify-between items-end">
         <div>
@@ -299,7 +299,7 @@ export function NordicTemplate({ userData, generatedResult, isEn, font, fontSize
         </div>
       </div>
 
-      <div className="space-y-4 flex-1 flex flex-col justify-between py-2">
+      <div className="space-y-5 flex-1 flex flex-col justify-start py-2">
         {/* Summary */}
         {summary && (
           <div>
@@ -366,7 +366,7 @@ export function SalesTemplate({ userData, generatedResult, isEn, font, fontSizeD
   const skills = parseSkills(userData.skills);
 
   return (
-    <div className="p-8 md:p-10 bg-white text-gray-900 min-h-[297mm] h-full flex flex-col justify-between" style={{ fontFamily: font, zoom: Math.max(0.7, 1 + fontSizeDelta * 0.07) }}>
+    <div className="p-8 md:p-10 bg-white text-gray-900 min-h-[297mm] flex flex-col justify-start" style={{ fontFamily: font, zoom: Math.max(0.7, 1 + fontSizeDelta * 0.07) }}>
       {/* Header */}
       <div className="border-b-4 border-emerald-600 pb-4 mb-4 flex justify-between items-center">
         <div>
@@ -380,7 +380,7 @@ export function SalesTemplate({ userData, generatedResult, isEn, font, fontSizeD
         </div>
       </div>
 
-      <div className="space-y-4 flex-1 flex flex-col justify-between py-2">
+      <div className="space-y-5 flex-1 flex flex-col justify-start py-2">
         {/* Summary */}
         {summary && (
           <div className="bg-emerald-50/50 p-4 rounded-xl border border-emerald-100">
@@ -453,7 +453,7 @@ export function MedicalTemplate({ userData, generatedResult, isEn, font, fontSiz
   const skills = parseSkills(userData.skills);
 
   return (
-    <div className="p-8 md:p-10 bg-white text-slate-900 min-h-[297mm] h-full flex flex-col justify-between" style={{ fontFamily: font, zoom: Math.max(0.7, 1 + fontSizeDelta * 0.07) }}>
+    <div className="p-8 md:p-10 bg-white text-slate-900 min-h-[297mm] flex flex-col justify-start" style={{ fontFamily: font, zoom: Math.max(0.7, 1 + fontSizeDelta * 0.07) }}>
       {/* Header Banner */}
       <div className="bg-teal-700 text-white p-6 rounded-2xl mb-4 shadow-sm flex justify-between items-center">
         <div>
@@ -467,7 +467,7 @@ export function MedicalTemplate({ userData, generatedResult, isEn, font, fontSiz
         </div>
       </div>
 
-      <div className="space-y-4 flex-1 flex flex-col justify-between py-2">
+      <div className="space-y-5 flex-1 flex flex-col justify-start py-2">
         {/* Summary */}
         {summary && (
           <div>
@@ -540,7 +540,7 @@ export function FreshGradTemplate({ userData, generatedResult, isEn, font, fontS
   const skills = parseSkills(userData.skills);
 
   return (
-    <div className="p-8 md:p-10 bg-white text-gray-900 min-h-[297mm] h-full flex flex-col justify-between" style={{ fontFamily: font, zoom: Math.max(0.7, 1 + fontSizeDelta * 0.07) }}>
+    <div className="p-8 md:p-10 bg-white text-gray-900 min-h-[297mm] flex flex-col justify-start" style={{ fontFamily: font, zoom: Math.max(0.7, 1 + fontSizeDelta * 0.07) }}>
       {/* Header */}
       <div className="text-center border-b-2 border-indigo-600 pb-4 mb-4">
         <h1 className="text-2xl font-extrabold text-indigo-900">{p.fullName || 'الاسم الكامل'}</h1>
@@ -552,7 +552,7 @@ export function FreshGradTemplate({ userData, generatedResult, isEn, font, fontS
         </div>
       </div>
 
-      <div className="space-y-4 flex-1 flex flex-col justify-between py-2">
+      <div className="space-y-5 flex-1 flex flex-col justify-start py-2">
         {/* Education Prioritized */}
         {userData.education?.length > 0 && (
           <div className="bg-indigo-50/60 p-4 rounded-xl border border-indigo-100">
@@ -626,7 +626,7 @@ export function SwissGridTemplate({ userData, generatedResult, isEn, font, fontS
   const skills = parseSkills(userData.skills);
 
   return (
-    <div className="p-8 md:p-10 bg-neutral-900 text-neutral-100 min-h-[297mm] h-full flex flex-col justify-between" style={{ fontFamily: font, zoom: Math.max(0.7, 1 + fontSizeDelta * 0.07) }}>
+    <div className="p-8 md:p-10 bg-neutral-900 text-neutral-100 min-h-[297mm] flex flex-col justify-start" style={{ fontFamily: font, zoom: Math.max(0.7, 1 + fontSizeDelta * 0.07) }}>
       {/* Header Grid */}
       <div className="grid grid-cols-3 border-b-2 border-neutral-700 pb-4 mb-4">
         <div className="col-span-2">
@@ -640,7 +640,7 @@ export function SwissGridTemplate({ userData, generatedResult, isEn, font, fontS
         </div>
       </div>
 
-      <div className="space-y-4 flex-1 flex flex-col justify-between py-2">
+      <div className="space-y-5 flex-1 flex flex-col justify-start py-2">
         {/* Summary */}
         {summary && (
           <div>
@@ -709,7 +709,7 @@ export function DesignerTemplate({ userData, generatedResult, isEn, font, fontSi
   const skills = parseSkills(userData.skills);
 
   return (
-    <div className="p-8 md:p-10 bg-slate-900 text-white min-h-[297mm] h-full flex flex-col justify-between" style={{ fontFamily: font, zoom: Math.max(0.7, 1 + fontSizeDelta * 0.07) }}>
+    <div className="p-8 md:p-10 bg-slate-900 text-white min-h-[297mm] flex flex-col justify-start" style={{ fontFamily: font, zoom: Math.max(0.7, 1 + fontSizeDelta * 0.07) }}>
       {/* Header Gradient */}
       <div className="bg-gradient-to-r from-violet-600 via-purple-600 to-pink-600 p-6 rounded-2xl mb-4 text-white shadow-lg">
         <h1 className="text-2xl font-black tracking-tight">{p.fullName || 'الاسم الكامل'}</h1>
@@ -721,7 +721,7 @@ export function DesignerTemplate({ userData, generatedResult, isEn, font, fontSi
         </div>
       </div>
 
-      <div className="space-y-4 flex-1 flex flex-col justify-between py-2">
+      <div className="space-y-5 flex-1 flex flex-col justify-start py-2">
         {/* Summary */}
         {summary && (
           <div className="bg-slate-800/60 p-4 rounded-xl border border-slate-700/80">
@@ -794,7 +794,7 @@ export function LegalTemplate({ userData, generatedResult, isEn, font, fontSizeD
   const skills = parseSkills(userData.skills);
 
   return (
-    <div className="p-8 md:p-10 bg-white text-gray-900 min-h-[297mm] h-full flex flex-col justify-between" style={{ fontFamily: font, zoom: Math.max(0.7, 1 + fontSizeDelta * 0.07) }}>
+    <div className="p-8 md:p-10 bg-white text-gray-900 min-h-[297mm] flex flex-col justify-start" style={{ fontFamily: font, zoom: Math.max(0.7, 1 + fontSizeDelta * 0.07) }}>
       {/* Header */}
       <div className="text-center border-b-4 border-yellow-800 pb-4 mb-4">
         <h1 className="text-2xl font-serif font-bold text-gray-900">{p.fullName || 'الاسم الكامل'}</h1>
@@ -806,7 +806,7 @@ export function LegalTemplate({ userData, generatedResult, isEn, font, fontSizeD
         </div>
       </div>
 
-      <div className="space-y-4 flex-1 flex flex-col justify-between py-2">
+      <div className="space-y-5 flex-1 flex flex-col justify-start py-2">
         {/* Summary */}
         {summary && (
           <div>
@@ -879,7 +879,7 @@ export function StartupTemplate({ userData, generatedResult, isEn, font, fontSiz
   const skills = parseSkills(userData.skills);
 
   return (
-    <div className="p-8 md:p-10 bg-slate-950 text-white min-h-[297mm] h-full flex flex-col justify-between" style={{ fontFamily: font, zoom: Math.max(0.7, 1 + fontSizeDelta * 0.07) }}>
+    <div className="p-8 md:p-10 bg-slate-950 text-white min-h-[297mm] flex flex-col justify-start" style={{ fontFamily: font, zoom: Math.max(0.7, 1 + fontSizeDelta * 0.07) }}>
       {/* Header */}
       <div className="border-b border-cyan-500/40 pb-4 mb-4 flex justify-between items-center">
         <div>
@@ -896,7 +896,7 @@ export function StartupTemplate({ userData, generatedResult, isEn, font, fontSiz
         </div>
       </div>
 
-      <div className="space-y-4 flex-1 flex flex-col justify-between py-2">
+      <div className="space-y-5 flex-1 flex flex-col justify-start py-2">
         {/* Summary */}
         {summary && (
           <div className="bg-slate-900 p-4 rounded-xl border border-cyan-500/30">
@@ -969,7 +969,7 @@ export function CompactOnePageTemplate({ userData, generatedResult, isEn, font, 
   const skills = parseSkills(userData.skills);
 
   return (
-    <div className="p-6 md:p-8 bg-white text-gray-900 min-h-[297mm] h-full flex flex-col justify-between overflow-hidden" style={{ fontFamily: font, zoom: Math.max(0.7, 1 + fontSizeDelta * 0.07) }}>
+    <div className="p-6 md:p-8 bg-white text-gray-900 min-h-[297mm] flex flex-col justify-start overflow-hidden" style={{ fontFamily: font, zoom: Math.max(0.7, 1 + fontSizeDelta * 0.07) }}>
       {/* Header */}
       <div className="border-b-2 border-gray-900 pb-3 mb-3 flex justify-between items-baseline">
         <div>
