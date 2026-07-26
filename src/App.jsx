@@ -373,17 +373,15 @@ export default function App() {
 
     try {
       const prompt = `
-        أنت خبير في الموارد البشرية. قم باستخراج بيانات السيرة الذاتية والخبرات بدقة من المدخلات المرفقة أدناه.
-        ملاحظة هامة: قد يكون هناك عدة ملفات مرفقة (صور أو مستندات)، وقد يكون هناك نص مدخل، أو كلاهما. 
-        يرجى قراءة جميع المرفقات والنصوص، ودمج البيانات بذكاء لاستخراج المعلومات الشاملة بدون تكرار.
-        إذا لم تجد معلومة معينة، اتركها فارغة. تجاهل أي نصوص نائبة (Placeholders) مثل [Date]. المهارات اجعلها نصاً واحداً مفصولاً بفواصل.
+        أنت خبير في الموارد البشرية. قم باستخراج بيانات السيرة الذاتية المرفقة بدقة.
+        إذا لم تجد معلومة معينة، اتركها فارغة. تجاهل أي نصوص نائبة (Placeholders) مثل [Date] أو [اسم الجامعة] ولا تقم باستخراجها. المهارات اجعلها نصاً واحداً مفصولاً بفواصل.
         ${userData.notes ? `\nتوجيهات وملاحظات هامة من المستخدم يجب مراعاتها بدقة أثناء الاستخراج:\n${userData.notes}\n` : ''}
       `;
 
       let parts = [{ text: prompt }];
 
       if (rawCvText.trim()) {
-        parts.push({ text: "--- النص المدخل الإضافي ---\n" + rawCvText });
+        parts.push({ text: "محتوى السيرة الذاتية النصي:\n" + rawCvText });
       }
 
       if (selectedFiles.length > 0) {
@@ -418,7 +416,7 @@ export default function App() {
               else if (file.name.toLowerCase().match(/\.(jpg|jpeg)$/)) mimeType = 'image/jpeg';
             }
             parts.push({ 
-              inline_data: { mime_type: mimeType, data: base64String } 
+              inlineData: { mimeType: mimeType, data: base64String } 
             });
           }
         }
